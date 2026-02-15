@@ -1,0 +1,10 @@
+Resolver problema de gravação muda:
+
+1. Verificação Rápida no Windows (Crucial)
+O driver WDM-KS ignora as configurações padrão, mas respeita o volume do hardware.
+
+1. Pressione Windows + R, digite mmsys.cpl e dê Enter.
+2. Vá na aba Gravação.
+3. Encontre o "Grupo de Microfones" ou "Microfone Realtek".
+4 . Fale alto perto do notebook. As barrinhas verdes ao lado do ícone sobem?
+	- Se NÃO subirem: O problema é físico ou driver do Windows (verifique se não está no "Mudo").

@@ -1,0 +1,32 @@
+[
+  {
+    "number": 1,
+    "length": 995,
+    "score": 0.8649865747459595,
+    "content": "para qualquer profissional de saúde que deseje atuar com competência nodiagnóstico e tratamento de doenças pulmonares.No espectro patológico, a distinção entre pneumonias bacterianas, virais clássicas e aCOVID-19 tornou-se um desafio diagnóstico diário. Embora compartilhem sintomas comodispneia, tosse e febre, as vias fisiopatológicas, a evolução clínica e as estratégias terapêuticasdiferem substancialmente. A pneumonia bacteriana, muitas vezes uma complicaçãosecundária ou uma entidade primária fulminante, exige reconhecimento rápido eantibioticoterapia assertiva para evitar a sepse. Por outro lado, as pneumonias virais, incluindoa influenza e o vírus sincicial respiratório (VSR), demandam suporte clínico e, em casosespecíficos, antivirais, com um foco intenso na prevenção vacinal.A COVID-19, por sua vez, introduziu uma nova variável: uma doença sistêmica comtropismo pulmonar, capaz de gerar uma resposta inflamatória desregulada (tempestade decitocinas) e fenômenos trombóticos que"
+  },
+  {
+    "number": 2,
+    "length": 518,
+    "score": 0.8610416191886276,
+    "content": "CaracterísticaCOVID-19PneumoniaBacterianaInfluenza (Gripe)\nAgente SARS-CoV-2 S. pneumoniae, etc. Vírus Influenza A/B\nSintoma Específico Anosmia/Disgeusia (comum emvariantes iniciais). Dor pleurítica, escarropurulento. Início abrupto, febre alta, mialgiaintensa.\nImagem (TC) Vidro fosco periférico bilateral. Consolidação focal(broncograma aéreo). Vidro fosco ou consolidaçãoperibroncovascular.\nTratamento Corticoides, Anticoagulantes,Suporte. Antibióticos. Oseltamivir (se < 48h), Suporte.\nFonte: Elaborado pelo autor."
+  },
+  {
+    "number": 3,
+    "length": 588,
+    "score": 0.8448753630420163,
+    "content": "as pneumonias bacterianas, com foco nosagentes etiológicos clássicos como Streptococcus pneumoniae, e as pneumonias virais não-COVID, como as causadas pelo vírus Influenza. Para cada condição, são apresentadosprotocolos atualizados de diagnóstico, estratificação de risco (CURB-65) e tratamentoantimicrobiano ou de suporte. Conclui-se que uma abordagem integrada, que valorize tanto aprevenção primária através de hábitos saudáveis e vacinação quanto o diagnóstico diferencialpreciso, é essencial para mitigar a morbimortalidade associada às doenças respiratórias nocenário pós-pandêmico."
+  },
+  {
+    "number": 4,
+    "length": 688,
+    "score": 0.8437759414251853,
+    "content": "6 PNEUMONIA VIRAL\n6.1 DEFINIÇÃO E EPIDEMIOLOGIA\nAntes da COVID-19, vírus respiratórios já eram reconhecidos como causasimportantes de pneumonia, especialmente em crianças, idosos e imunossuprimidos. Com oadvento de testes moleculares (painéis virais), a identificação de pneumonias virais puras oucoinfecções aumentou.\n6.2 ETIOLOGIA\nOs principais agentes incluem os vírus Influenza A e B, Vírus Sincicial Respiratório(VSR), Parainfluenza, Adenovírus e Metapneumovírus humano. A pneumonia por Influenzapode ser primária (viral direta) ou secundária (bacteriana pós-viral). A pneumonia por VSR éparticularmente grave em lactentes (bronquiolite) e idosos frágeis.\n6.5 DIAGNÓSTICO DIFERENCIAL"
+  },
+  {
+    "number": 5,
+    "length": 556,
+    "score": 0.8429861937777882,
+    "content": "CaracterísticaPneumonia Bacteriana Típica Pneumonia Viral\nInício Súbito, com tremores e febre alta. Gradual ou agudo, muitas vezes precedido porpródromos.\nTosse Produtiva (purulenta/ferruginosa). Geralmente seca/improdutiva.\nSintomasextrapulmonares Menos comuns (excetoLegionella/Mycoplasma). Comuns (mialgia, cefaleia, fadiga intensa).\nLeucograma Leucocitose com desvio à esquerda(neutrofilia). Leucócitos normais, baixos ou linfocitose.\nRadiografia Consolidação lobar/segmentar. Infiltrado intersticial difuso ou vidro fosco.\nFonte: Elaborado pelo autor."
+  }
+]

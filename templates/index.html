@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface de Mensagens</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+        }
+
+        /* Message styles */
+        .message {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        /* Avatar styles */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            margin: 0 10px;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Message content styles */
+        .message-content {
+            background-color: #f0f0f0;
+            padding: 12px;
+            border-radius: 15px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .message.bot .message-content {
+            background-color: #e3f2fd;
+            border-top-left-radius: 5px;
+        }
+
+        .message.user .message-content {
+            background-color: #e8f5e9;
+            border-top-right-radius: 5px;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Recording button styles */
+        #micBtn.recording {
+            background-color: #ff4444;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .container {
+            width: 800px;  /* Aumentado de 300px */
+            height: 700px; /* Aumentado de 500px */
+            border: 2px solid #000;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .messages {
+            flex-grow: 1;
+            border: 2px solid #000;
+            margin-bottom: 15px;
+            background-color: #fff;
+            overflow-y: auto;
+            height: 500px; /* Altura específica para a área de mensagens */
+        }
+
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .text-input {
+            width: 100%;
+            height: 80px; /* Aumentado de altura */
+            padding: 12px;
+            border: 2px solid #000;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #666;
+            resize: none;
+        }
+
+        .text-input::placeholder {
+            color: #666;
+        }
+
+        .file-selection {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .file-input-container {
+            flex: 2;
+            position: relative;
+        }
+
+        .file-input {
+            width: 95%;
+            padding: 8px;
+            border: 1px solid #000;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .btn-send {
+            background-color: #4CAF50;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+        }
+
+        .btn-mic {
+            background-color: #2196F3;
+        }
+
+        .recording {
+            background-color: #ff4444;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .message {
+            padding: 8px;
+            margin: 5px;
+            border-radius: 5px;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: 20px;
+        }
+
+        .bot-message {
+            background-color: #f5f5f5;
+            margin-right: 20px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Estilos para raio-X */
+        .btn-xray {
+            background-color: #9c27b0;
+        }
+
+        .btn-xray:hover {
+            background-color: #7b1fa2;
+        }
+
+        .xray-result {
+            background-color: #f3e5f5 !important;
+            border-left: 4px solid #9c27b0;
+        }
+
+        .xray-result strong {
+            color: #6a1b9a;
+        }
+
+        .xray-warning {
+            background-color: #fff3e0;
+            border: 1px solid #ff9800;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            border-radius: 5px;
+        }
+
+        .xray-probabilities {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        /* Estilos para video raio-X */
+        .btn-video {
+            background-color: #1565c0;
+        }
+
+        .btn-video:hover {
+            background-color: #0d47a1;
+        }
+
+        .video-xray-result {
+            background-color: #e3f2fd !important;
+            border-left: 4px solid #1565c0;
+        }
+
+        .video-xray-result strong {
+            color: #0d47a1;
+        }
+
+        .video-stats {
+            background-color: #e8eaf6;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .frame-details-toggle {
+            color: #1565c0;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: underline;
+            border: none;
+            background: none;
+            padding: 0;
+            margin-top: 5px;
+        }
+
+        .frame-details {
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.85em;
+            background-color: #f5f5f5;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .frame-details.visible {
+            display: block;
+        }
+
+        /* Seletor de dispositivo de audio */
+        .device-selector {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .device-selector label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .device-selector select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .device-selector select:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        /* Layout wrapper */
+        .page-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        /* Painel informativo lateral */
+        .info-panel {
+            width: 320px;
+            border: 2px solid #000;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            height: 700px;
+            overflow-y: auto;
+        }
+
+        .info-panel h2 {
+            margin-top: 0;
+            color: #1565c0;
+            font-size: 1.3em;
+        }
+
+        .info-panel h3 {
+            font-size: 1em;
+            font-weight: normal;
+            margin-top: 5px;
+            color: #666;
+        }
+
+        .info-panel table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .info-panel th, .info-panel td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .info-panel th {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            font-weight: bold;
+        }
+
+        .info-panel .usage-section {
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .info-panel .usage-section h4 {
+            color: #1565c0;
+            margin-bottom: 8px;
+        }
+
+        .info-panel .usage-section li {
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+    <div class="container">
+        <div class="messages" id="messageArea"></div>
+        <div class="input-area">
+            <div class="file-selection">
+                <!-- Campo para selecionar imagem de raio-X -->
+                <div class="file-input-container">
+                    <input type="file" id="xrayInput" accept="image/*" class="file-input" placeholder="Escolher imagem de raio-X">
+                </div>
+                <button class="btn btn-xray" id="xrayBtn" onclick="analyzeXray()">
+                    <i class="fas fa-x-ray"></i> Analisar Raio-X
+                </button>
+            </div>
+            <div class="file-selection">
+                <!-- Campo para selecionar video de raio-X -->
+                <div class="file-input-container">
+                    <input type="file" id="videoInput" accept="video/mp4,video/avi,video/mov,video/mkv,video/webm,video/*" class="file-input">
+                </div>
+                <button class="btn btn-video" id="videoBtn" onclick="analyzeVideo()">
+                    <i class="fas fa-video"></i> Analisar Video
+                </button>
+            </div>
+            <textarea class="text-input" id="messageInput" placeholder="Digite sua mensagem aqui..."></textarea>
+            <div class="device-selector">
+                <label>Dispositivo de audio:</label>
+                <select id="audioDeviceSelect">
+                    <option value="headphone">Fone de Ouvido</option>
+                    <option value="computer_mic">Microfone do Computador</option>
+                </select>
+            </div>
+            <div class="buttons">
+                <button class="btn btn-send" id="sendBtn">Enviar</button>
+                <button class="btn btn-delete" id="deleteBtn">Deletar</button>
+                <button class="btn btn-mic" id="micBtn">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="hearResponseCheckbox">
+                    <label for="hearResponseCheckbox">Voz</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="info-panel">
+        <h2>Classificacao de Doencas Pulmonares</h2>
+        <h3>Sistema de classificacao automatica de imagens de raio-X toracico utilizando Deep Learning (ResNet50) para deteccao de condicoes pulmonares</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Classe</th>
+                    <th>Descricao</th>
+                    <th>Codigo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Covid-19</strong></td>
+                    <td>Pacientes diagnosticados com COVID-19</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td><strong>Healthy</strong></td>
+                    <td>Pacientes saudaveis (sem doenca pulmonar)</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td><strong>Viral Pneumonia</strong></td>
+                    <td>Pneumonia causada por virus</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td><strong>Bacterial Pneumonia</strong></td>
+                    <td>Pneumonia causada por bacterias</td>
+                    <td>3</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="usage-section">
+            <h4>Como Usar</h4>
+            <ol>
+                <li><strong>Upload de Raio-X:</strong> Clique em "Escolher imagem" e depois em "Analisar Raio-X"</li>
+                <li><strong>Analise de Video:</strong> Selecione um video de raio-X e clique em "Analisar Video"</li>
+                <li><strong>Deteccao na Tela:</strong> Abra uma imagem de raio-X e pergunte "o que tem na minha tela?"</li>
+                <li><strong>Perguntas de Follow-up:</strong> Apos a classificacao, pergunte "explique mais sobre este diagnostico"</li>
+                <li><strong>Dispositivo de audio:</strong> Selecione entre "Fone de Ouvido" ou "Microfone do Computador, para entrada da sua pergunta por audio"</li>
+                <li><strong>Voz:</strong> Marque a caixa "Voz" para ouvir as respostas do chatbot em audio</li>
+                <li><strong>Enviar:</strong> Envia a mensagem digitada no campo de texto</li>
+                <li><strong>Deletar:</strong> Limpa todo o historico de mensagens do chat</li>
+                <li><strong>Microfone:</strong> Clique para gravar sua pergunta por audio; clique novamente para parar e enviar</li>
+            </ol>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        // Funcao para analisar raio-X
+        async function analyzeXray() {
+            const fileInput = document.getElementById('xrayInput');
+            const messageArea = document.getElementById('messageArea');
+            const files = fileInput.files;
+
+            if (files.length === 0) {
+                alert('Por favor, selecione uma imagem de raio-X.');
+                return;
+            }
+
+            // Mostrar mensagem de carregamento
+            const loadingMsg = createMessageElement('[Enviando raio-X para analise...]', true);
+            messageArea.appendChild(loadingMsg);
+            messageArea.scrollTop = messageArea.scrollHeight;
+
+            const formData = new FormData();
+            formData.append('file', files[0]);
+
+            try {
+                const response = await fetch('/upload_xray', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                // Remover mensagem de carregamento
+                messageArea.removeChild(loadingMsg);
+
+                if (data.error) {
+                    // Mostrar erro
+                    messageArea.appendChild(createMessageElement('Erro: ' + (data.message || data.error), false));
+                } else if (data.type === 'not_xray') {
+                    // Imagem nao e raio-X
+                    messageArea.appendChild(createMessageElement(data.content, false));
+                } else if (data.type === 'xray') {
+                    // Resultado do raio-X
+                    const resultElement = createXrayResultElement(data);
+                    messageArea.appendChild(resultElement);
+
+                    // Reproduzir audio se habilitado
+                    if (hearResponseCheckbox.checked) {
+                        // Criar texto completo para audio incluindo informacoes de saude
+                        const audioText = `Resultado da analise de raio-X: ${data.classification.class_name} com ${(data.classification.confidence * 100).toFixed(1)} porcento de confianca. ${data.health_info || ''}`;
+                        await playAudio(audioText);
+                    }
+                }
+
+                // Limpar input
+                fileInput.value = '';
+                messageArea.scrollTop = messageArea.scrollHeight;
+
+            } catch (error) {
+                console.error('Error:', error);
+                messageArea.removeChild(loadingMsg);
+                messageArea.appendChild(createMessageElement('Erro ao analisar raio-X: ' + error.message, false));
+            }
+        }
+
+        // Funcao para criar elemento de resultado de raio-X formatado
+        function createXrayResultElement(data) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'avatar';
+
+            const img = document.createElement('img');
+            img.src = '/static/bot-avatar.png';
+            img.alt = 'Bot Avatar';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content xray-result';
+
+            const classification = data.classification;
+            const probs = classification.all_probabilities;
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-top: 0; color: #6a1b9a;">Resultado da Analise de Raio-X</h4>
+                <p><strong>Classificacao:</strong> <span style="font-size: 1.1em; color: #9c27b0;">${classification.class_name}</span></p>
+                <p><strong>Confianca:</strong> ${(classification.confidence * 100).toFixed(1)}%</p>
+                <hr style="border-color: #e1bee7;">
+                <p class="xray-probabilities"><strong>Probabilidades por classe:</strong></p>
+                <ul class="xray-probabilities" style="margin: 5px 0; padding-left: 20px;">
+                    <li>Covid-19: ${(probs['Covid-19'] * 100).toFixed(1)}%</li>
+                    <li>Normal: ${(probs['Normal'] * 100).toFixed(1)}%</li>
+                    <li>Pneumonia Viral: ${(probs['Pneumonia Viral'] * 100).toFixed(1)}%</li>
+                    <li>Pneumonia Bacteriana: ${(probs['Pneumonia Bacteriana'] * 100).toFixed(1)}%</li>
+                </ul>
+                <hr style="border-color: #e1bee7;">
+                <p><strong>Informacoes Complementares:</strong></p>
+                <p style="font-size: 0.95em;">${data.health_info || 'Nao disponivel'}</p>
+                <div class="xray-warning">
+                    <strong>IMPORTANTE:</strong> Este resultado e apenas informativo e NAO substitui o diagnostico de um profissional de saude qualificado. Consulte sempre um medico.
+                </div>
+                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Voce pode fazer perguntas sobre este diagnostico.</p>
+            `;
+
+            avatarDiv.appendChild(img);
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
+
+            return messageDiv;
+        }
+
+        // Funcao para analisar video de raio-X
+        async function analyzeVideo() {
+            const fileInput = document.getElementById('videoInput');
+            const messageArea = document.getElementById('messageArea');
+            const files = fileInput.files;
+
+            if (files.length === 0) {
+                alert('Por favor, selecione um video de raio-X.');
+                return;
+            }
+
+            // Mostrar mensagem de carregamento
+            const loadingMsg = createMessageElement('[Enviando video para analise... Isso pode levar alguns segundos.]', true);
+            messageArea.appendChild(loadingMsg);
+            messageArea.scrollTop = messageArea.scrollHeight;
+
+            const formData = new FormData();
+            formData.append('file', files[0]);
+
+            try {
+                const response = await fetch('/upload_video', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                // Remover mensagem de carregamento
+                messageArea.removeChild(loadingMsg);
+
+                if (data.error) {
+                    messageArea.appendChild(createMessageElement('Erro: ' + (data.message || data.error), false));
+                } else if (data.type === 'video_xray') {
+                    const resultElement = createVideoXrayResultElement(data);
+                    messageArea.appendChild(resultElement);
+
+                    // Reproduzir audio se habilitado
+                    if (hearResponseCheckbox.checked) {
+                        const audioText = `Resultado da analise de video de raio-X: ${data.classification.class_name} com ${(data.classification.confidence * 100).toFixed(1)} porcento de confianca, baseado em ${data.video_stats.total_frames_analyzed} frames analisados. ${data.health_info || ''}`;
+                        await playAudio(audioText);
+                    }
+                }
+
+                // Limpar input
+                fileInput.value = '';
+                messageArea.scrollTop = messageArea.scrollHeight;
+
+            } catch (error) {
+                console.error('Error:', error);
+                messageArea.removeChild(loadingMsg);
+                messageArea.appendChild(createMessageElement('Erro ao analisar video: ' + error.message, false));
+            }
+        }
+
+        // Funcao para criar elemento de resultado de video raio-X formatado
+        function createVideoXrayResultElement(data) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'avatar';
+
+            const img = document.createElement('img');
+            img.src = '/static/bot-avatar.png';
+            img.alt = 'Bot Avatar';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content video-xray-result';
+
+            const classification = data.classification;
+            const probs = classification.all_probabilities;
+            const stats = data.video_stats;
+            const counts = stats.classification_counts;
+
+            // Gerar lista de contagem por classe
+            let countsHtml = '';
+            for (const [cls, count] of Object.entries(counts)) {
+                countsHtml += `<li>${cls}: ${count} frame(s)</li>`;
+            }
+
+            // Gerar detalhes por frame (colapsavel)
+            const frameDetailsId = 'frameDetails_' + Date.now();
+            let frameDetailsHtml = '';
+            if (data.frame_results) {
+                data.frame_results.forEach(fr => {
+                    frameDetailsHtml += `<div style="padding: 2px 0; border-bottom: 1px solid #e0e0e0;">
+                        Frame ${fr.frame_number}: <strong>${fr.class_name}</strong> (${(fr.confidence * 100).toFixed(1)}%)
+                    </div>`;
+                });
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-top: 0; color: #0d47a1;">
+                    <i class="fas fa-video"></i> Resultado da Analise de Video de Raio-X
+                </h4>
+                <p><strong>Classificacao Final:</strong>
+                    <span style="font-size: 1.1em; color: #1565c0;">${classification.class_name}</span>
+                </p>
+                <p><strong>Confianca Media:</strong> ${(classification.confidence * 100).toFixed(1)}%</p>
+
+                <div class="video-stats">
+                    <strong>Estatisticas do Video:</strong><br>
+                    Frames totais: ${stats.total_frames_video} |
+                    Frames analisados: ${stats.total_frames_analyzed} |
+                    FPS: ${stats.fps ? stats.fps.toFixed(0) : 'N/A'}
+                </div>
+
+                <p class="xray-probabilities"><strong>Contagem por classificacao:</strong></p>
+                <ul class="xray-probabilities" style="margin: 5px 0; padding-left: 20px;">
+                    ${countsHtml}
+                </ul>
+
+                <hr style="border-color: #bbdefb;">
+                <p class="xray-probabilities"><strong>Probabilidades medias por classe:</strong></p>
+                <ul class="xray-probabilities" style="margin: 5px 0; padding-left: 20px;">
+                    <li>Covid-19: ${(probs['Covid-19'] * 100).toFixed(1)}%</li>
+                    <li>Normal: ${(probs['Normal'] * 100).toFixed(1)}%</li>
+                    <li>Pneumonia Viral: ${(probs['Pneumonia Viral'] * 100).toFixed(1)}%</li>
+                    <li>Pneumonia Bacteriana: ${(probs['Pneumonia Bacteriana'] * 100).toFixed(1)}%</li>
+                </ul>
+
+                <button class="frame-details-toggle" onclick="document.getElementById('${frameDetailsId}').classList.toggle('visible')">
+                    Ver detalhes por frame
+                </button>
+                <div id="${frameDetailsId}" class="frame-details">
+                    ${frameDetailsHtml}
+                </div>
+
+                <hr style="border-color: #bbdefb;">
+                <p><strong>Informacoes Complementares:</strong></p>
+                <p style="font-size: 0.95em;">${data.health_info || 'Nao disponivel'}</p>
+                <div class="xray-warning">
+                    <strong>IMPORTANTE:</strong> Este resultado e apenas informativo e NAO substitui o diagnostico de um profissional de saude qualificado. Consulte sempre um medico.
+                </div>
+                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Voce pode fazer perguntas sobre este diagnostico.</p>
+            `;
+
+            avatarDiv.appendChild(img);
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
+
+            return messageDiv;
+        }
+
+        // [O script JavaScript permanece o mesmo que o original]
+        let isRecording = false;
+        const hearResponseCheckbox = document.getElementById('hearResponseCheckbox');
+
+        // Carregar configurações
+        fetch('/settings.json')
+            .then(response => response.json())
+            .then(settings => {
+                hearResponseCheckbox.checked = settings.hear_response;
+            })
+            .catch(console.error);
+
+        // Salvar configurações quando alteradas
+        hearResponseCheckbox.addEventListener('change', saveSettings);
+
+        function saveSettings() {
+            const settings = {
+                hear_response: hearResponseCheckbox.checked,
+                selected_voice: 'alloy'
+            };
+            
+            fetch('/save_settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(settings)
+            });
+        }
+
+        async function playAudio(text) {
+            if (!hearResponseCheckbox.checked) return;
+            
+            try {
+                const response = await fetch('/text_to_speech', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        voice: 'alloy'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+                    await audio.play();
+                }
+            } catch (error) {
+                console.error('Error playing audio:', error);
+            }
+        }
+
+        // Function to create a message element with avatar
+        function createMessageElement(content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'avatar';
+            
+            const img = document.createElement('img');
+            img.src = isUser ? '/static/user-avatar.png' : '/static/bot-avatar.png';
+            img.alt = isUser ? 'User Avatar' : 'Bot Avatar';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = content;
+            
+            avatarDiv.appendChild(img);
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
+            
+            return messageDiv;
+        }
+
+        // Modified sendMessage function
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const messageArea = document.getElementById('messageArea');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                // Add user message with avatar
+                messageArea.appendChild(createMessageElement(message, true));
+                
+                const response = await fetch('/send_message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+
+                // Verificar se é raio-X detectado na tela
+                if (data.type === 'xray_screen') {
+                    const resultElement = createXrayResultElement(data);
+                    messageArea.appendChild(resultElement);
+
+                    if (hearResponseCheckbox.checked) {
+                        const audioText = `Detectei um raio-X na sua tela: ${data.classification.class_name} com ${(data.classification.confidence * 100).toFixed(1)} por cento de confiança. ${data.health_info || ''}`;
+                        await playAudio(audioText);
+                    }
+                } else {
+                    // Comportamento original para outros tipos
+                    messageArea.appendChild(createMessageElement(data.content, false));
+
+                    if (hearResponseCheckbox.checked) {
+                        await playAudio(data.content);
+                    }
+                }
+
+                messageInput.value = '';
+                messageArea.scrollTop = messageArea.scrollHeight;
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        document.getElementById('deleteBtn').addEventListener('click', () => {
+            document.getElementById('messageArea').innerHTML = '';
+        });
+
+        document.getElementById('micBtn').addEventListener('click', async () => {
+            const micBtn = document.getElementById('micBtn');
+            const messageArea = document.getElementById('messageArea');
+            const deviceSelect = document.getElementById('audioDeviceSelect');
+            const useComputerMic = deviceSelect.value === 'computer_mic';
+
+            if (!isRecording) {
+                isRecording = true;
+                micBtn.classList.add('recording');
+                // Usa rota diferente baseado na selecao
+                const startEndpoint = useComputerMic ? '/start_recording_mic' : '/start_recording';
+                await fetch(startEndpoint, { method: 'POST' });
+            } else {
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                // Usa rota diferente baseado na selecao
+                const stopEndpoint = useComputerMic ? '/stop_recording_mic' : '/stop_recording';
+                const response = await fetch(stopEndpoint, { method: 'POST' });
+                const data = await response.json();
+
+                if (data.transcript) {
+                    // Add user's transcribed message with avatar
+                    messageArea.appendChild(createMessageElement(data.transcript, true));
+
+                    // Verificar se é raio-X detectado na tela
+                    if (data.response.type === 'xray_screen') {
+                        const resultElement = createXrayResultElement(data.response);
+                        messageArea.appendChild(resultElement);
+
+                        if (hearResponseCheckbox.checked) {
+                            const audioText = `Detectei um raio-X na sua tela: ${data.response.classification.class_name} com ${(data.response.classification.confidence * 100).toFixed(1)} por cento de confiança. ${data.response.health_info || ''}`;
+                            await playAudio(audioText);
+                        }
+                    } else {
+                        // Comportamento original
+                        messageArea.appendChild(createMessageElement(data.response.content, false));
+
+                        if (hearResponseCheckbox.checked) {
+                            await playAudio(data.response.content);
+                        }
+                    }
+
+                    messageArea.scrollTop = messageArea.scrollHeight;
+                } else if (data.error) {
+                    // Mostrar erro se houver
+                    messageArea.appendChild(createMessageElement('Erro: ' + data.error, false));
+                    messageArea.scrollTop = messageArea.scrollHeight;
+                }
+            }
+        });        
+    </script>
+</body>
+</html>
